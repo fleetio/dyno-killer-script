@@ -5,7 +5,7 @@ class PapertrailClient
 
   # Read all logs that that output memory
   def events_with_memory_metrics
-    request('heroku%2Fweb+sample%23memory_total%3D+OR+"error+r14')
+    request('heroku%2Fweb+sample%23memory_total%3D+OR+"error+r14"')
   end
 
   def events_with_load_metrics
