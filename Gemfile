@@ -8,7 +8,7 @@ gem 'rest-client'
 
 gem 'json', '2.3.0'
 
-gem 'platform-api'
+gem 'platform-api', "3.3.0"
 
 gem 'rubocop', require: false
 
