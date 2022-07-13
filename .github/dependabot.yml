@@ -1,0 +1,10 @@
+version: 2
+
+updates:
+- package-ecosystem: bundler
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "02:00"
+    timezone: Canada/Central
+  open-pull-requests-limit: 10
