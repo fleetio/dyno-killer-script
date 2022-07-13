@@ -1,5 +1,5 @@
 require 'bundler'
-require_relative 'lib/heroku_dyno_killer.rb'
+require_relative 'lib/heroku_dyno_killer'
 
 Bundler.require
 

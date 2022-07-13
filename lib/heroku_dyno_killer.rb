@@ -1,5 +1,5 @@
-require_relative 'papertrail/client.rb'
-require_relative 'heroku/client.rb'
+require_relative 'papertrail/client'
+require_relative 'heroku/client'
 require 'platform-api'
 require 'rest-client'
 
