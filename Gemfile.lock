@@ -4,7 +4,7 @@ GEM
     ast (2.4.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    dotenv (2.7.5)
+    dotenv (2.7.6)
     erubis (2.7.0)
     excon (0.92.3)
     heroics (0.1.2)
