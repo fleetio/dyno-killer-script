@@ -1,12 +1,12 @@
-require_relative 'papertrail/client'
+require_relative "datadog/client"
 require_relative 'heroku/client'
 require 'platform-api'
 require 'rest-client'
 
 class HerokuDynoKiller
-  def initialize(papertrail_config, heroku_config, threshold, load_threshold)
-    @papertrail = PapertrailClient.new(papertrail_config)
+  def initialize(heroku_config, threshold, load_threshold)
     @heroku = HerokuClient.new(heroku_config)
+    @datadog = DatadogClient.new
 
     @threshold = threshold
     @load_threshold = load_threshold
@@ -41,24 +41,24 @@ class HerokuDynoKiller
     dynos_by_memory.select do |dyno|
       (dyno[:memory] == 'R14' ||
         dyno[:memory] >= @threshold) &&
-        ((DateTime.now - DateTime.parse(dyno[:timestamp])).to_f * 24 * 60).to_i <= 6
+      (Time.now.utc - dyno[:timestamp]).to_f / 60 <= 6
     end
   end
 
   def dynos_over_load_threshold
     dynos_by_load.select do |dyno|
       dyno[:load] >= @load_threshold &&
-        ((DateTime.now - DateTime.parse(dyno[:timestamp])).to_f * 24 * 60).to_i <= 6
+        (Time.now.utc - dyno[:timestamp]).to_f / 60 <= 6
     end
   end
 
   private
 
-  # Get all dynos and their memory usage from papertrail logs.
+  # Get all dynos and their memory usage from logs.
   def dynos_by_memory
     data = {}
-    @papertrail.events_with_memory_metrics.each do |event|
-      data[dyno_name_from_event(event)] = [memory_from_event(event), event['received_at']]
+    @datadog.events_with_memory_metrics(@threshold).each do |event|
+      data[dyno_name_from_event(event)] = [memory_from_event(event), event.timestamp]
     end
 
     data.map do |k, v|
@@ -68,8 +68,8 @@ class HerokuDynoKiller
 
   def dynos_by_load
     data = {}
-    @papertrail.events_with_load_metrics.each do |event|
-      data[dyno_name_from_event(event)] = [load_from_event(event), event['received_at']]
+    @datadog.events_with_load_metrics(@load_threshold).each do |event|
+      data[dyno_name_from_event(event)] = [load_from_event(event), event.timestamp]
     end
 
     data.map do |k, v|
@@ -79,20 +79,20 @@ class HerokuDynoKiller
 
   # Extract dyno name from log
   def dyno_name_from_event(event)
-    event['program'].gsub('heroku/', '')
+    event.attributes["syslog"][:procid]
   end
 
   # Extract dyno memory from log
   def memory_from_event(event)
-    if !event['message'].scan(/Error R14/).empty?
-      'R14'
+    if event.attributes.dig("error", :kind)
+      "R14"
     else
-      event['message'].scan(/sample#memory_total=(\d+\.\d*)/).last.first.to_f
+      event.attributes.dig("heroku", :memory, :total).to_f / 1_000_000
     end
   end
 
   # Extract dyno load from log
   def load_from_event(event)
-    event['message'].scan(/sample#load_avg_1m=(\d+\.\d*)/).last.first.to_f
+    event.attributes.dig("heroku", :cpu, :"1m").to_f
   end
 end
