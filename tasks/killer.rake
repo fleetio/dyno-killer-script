@@ -54,7 +54,6 @@ namespace :dynos do
 
   def killer
     @killer ||= HerokuDynoKiller.new(
-      { token: ENV['PAPERTRAIL_TOKEN'] },
       { app_name: ENV['APP_NAME'], token: ENV['HEROKU_TOKEN'] },
       ENV['MEMORY_THRESHOLD_IN_MB'].to_f,
       ENV['LOAD_1MIN_THRESHOLD'].to_f

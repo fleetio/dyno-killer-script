@@ -10,6 +10,8 @@ gem 'json', '2.6.2'
 
 gem 'platform-api', "3.3.0"
 
+gem "datadog_api_client"
+
 group :development do
   gem 'rubocop', require: false
 
