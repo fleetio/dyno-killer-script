@@ -6,7 +6,7 @@ gem 'rake'
 
 gem 'rest-client'
 
-gem 'json', '2.6.2'
+gem 'json', '2.6.3'
 
 gem 'platform-api', "3.5.0"
 
