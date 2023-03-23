@@ -19,6 +19,15 @@ class HerokuDynoKiller
 
     dynos_over_memory_threshold.each do |dyno|
       @heroku.restart(dyno[:name])
+      @datadog.send_event(
+        "Restarting (#{ENV['MEMORY_THRESHOLD_IN_MB']}MB): #{dyno[:name]} "\
+          "with #{dyno[:memory]} | Time: #{dyno[:timestamp]}",
+        "",
+        [
+          "event_type:restart",
+          "env:production"
+        ]
+      )
       restarts.push dyno
     end
 
@@ -30,6 +39,15 @@ class HerokuDynoKiller
 
     dynos_over_load_threshold.each do |dyno|
       @heroku.restart(dyno[:name])
+      @datadog.send_event(
+        "Restarting (#{ENV['LOAD_1MIN_THRESHOLD']}): " \
+          "#{dyno[:name]} with #{dyno[:load]} | Time: #{dyno[:timestamp]}",
+        "",
+        [
+          "event_type:restart",
+          "env:production"
+        ]
+      )
       restarts.push dyno
     end
 
@@ -41,7 +59,7 @@ class HerokuDynoKiller
     dynos_by_memory.select do |dyno|
       (dyno[:memory] == 'R14' ||
         dyno[:memory] >= @threshold) &&
-      (Time.now.utc - dyno[:timestamp]).to_f / 60 <= 6
+        (Time.now.utc - dyno[:timestamp]).to_f / 60 <= 6
     end
   end
 
