@@ -1,3 +1,6 @@
+Layout/FirstHashElementIndentation:
+  Enabled: false
+
 Layout/LineLength:
   Enabled: true
   Max: 100
@@ -5,8 +8,17 @@ Layout/LineLength:
 Metrics/BlockLength:
   Enabled: false
 
+Metrics/MethodLength:
+  Enabled: false
+
 Style/Documentation:
   Enabled: false
 
 Style/FrozenStringLiteralComment:
   Enabled: false
+
+Style/HashSyntax:
+  EnforcedShorthandSyntax: either
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes

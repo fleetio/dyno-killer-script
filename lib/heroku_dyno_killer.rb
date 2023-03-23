@@ -1,7 +1,7 @@
 require_relative "datadog/client"
-require_relative 'heroku/client'
-require 'platform-api'
-require 'rest-client'
+require_relative "heroku/client"
+require "platform-api"
+require "rest-client"
 
 class HerokuDynoKiller
   def initialize(heroku_config, threshold, load_threshold)
@@ -57,7 +57,7 @@ class HerokuDynoKiller
   # Returns all dynos over threshold.
   def dynos_over_memory_threshold
     dynos_by_memory.select do |dyno|
-      (dyno[:memory] == 'R14' ||
+      (dyno[:memory] == "R14" ||
         dyno[:memory] >= @threshold) &&
         (Time.now.utc - dyno[:timestamp]).to_f / 60 <= 6
     end
