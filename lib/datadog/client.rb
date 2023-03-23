@@ -16,25 +16,42 @@ class DatadogClient
     request("dyno:web* @heroku.cpu.1m:>#{threshold}")
   end
 
+  def send_event(title, text, tags = [])
+    body = DatadogAPIClient::V1::EventCreateRequest.new({
+      title: title,
+      text: text,
+      tags: tags
+    })
+
+    events_api_client.create_event(body)
+  end
+
   private
 
   def request(search_term)
-    api_instance = DatadogAPIClient::V2::LogsAPI.new
     body = DatadogAPIClient::V2::LogsListRequest.new({
       filter: DatadogAPIClient::V2::LogsQueryFilter.new({
         query: search_term,
         from: "now-10m",
-        to: "now",
+        to: "now"
       }),
       sort: DatadogAPIClient::V2::LogsSort::TIMESTAMP_ASCENDING,
       page: DatadogAPIClient::V2::LogsListRequestPage.new({
-        limit: 1000,
-      }),
+        limit: 1000
+      })
     })
     opts = {
-      body: body,
+      body: body
     }
-    logs = api_instance.list_logs(opts)
+    logs = logs_api_client.list_logs(opts)
     logs.data.map(&:attributes)
+  end
+
+  def logs_api_client
+    @logs_api_client ||= DatadogAPIClient::V2::LogsAPI.new
+  end
+
+  def events_api_client
+    @events_api_client ||= DatadogAPIClient::V1::EventsAPI.new
   end
 end
