@@ -4,9 +4,7 @@ updates:
 - package-ecosystem: bundler
   directory: "/"
   schedule:
-    interval: daily
-    time: "02:00"
-    timezone: Canada/Central
+    interval: weekly
   open-pull-requests-limit: 10
 
 - package-ecosystem: "github-actions"
