@@ -10,7 +10,7 @@ GEM
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.8.1)
     erubis (2.7.0)
-    excon (0.99.0)
+    excon (0.109.0)
     heroics (0.1.2)
       erubis (~> 2.0)
       excon
@@ -37,7 +37,7 @@ GEM
     parser (3.3.0.4)
       ast (~> 2.4.1)
       racc
-    platform-api (3.5.0)
+    platform-api (3.6.0)
       heroics (~> 0.1.1)
       moneta (~> 1.0.0)
       rate_throttle_client (~> 0.1.0)
@@ -81,7 +81,7 @@ DEPENDENCIES
   datadog_api_client
   dotenv
   json (= 2.7.1)
-  platform-api (= 3.5.0)
+  platform-api (= 3.6.0)
   rake
   rest-client
   rubocop
